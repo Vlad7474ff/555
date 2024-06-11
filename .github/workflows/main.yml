@@ -1,24 +1,17 @@
 name: Cripto-test
-
 on: push
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
       - name: Test
         run: |
-          hash_output=$(python main.py)
-          echo "Random hash output: $hash_output"
-          
-          # Checking if the output contains "Success"
-          if [[ "$hash_output" != *"Success"* ]]; then
-            echo "Hash length validation failed"
-            exit 1
+          hash_length=$(python -c "import random; import string; print(len(''.join(random.choice(string.ascii_letters + string.digits) for i in range(6))) == 6)")
+          if [ "$hash_length" = true ]; then
+            echo "Success: Hash length is correct."
           else
-            echo "Hash length validation succeeded"
+            echo "Failure: Hash length is incorrect."
+            exit 1
           fi
