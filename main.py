@@ -7,5 +7,3 @@ def generate_random_hash(length):
 
 random_hash = generate_random_hash(6)
 print(random_hash)
-#!
-#2
