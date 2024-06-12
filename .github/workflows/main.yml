@@ -1,36 +1,30 @@
 name: Python CI
 
-on: 
-  push: 
-    branches: [ master ] 
-  pull_request: 
-    branches: [ master ] 
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
-jobs: 
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-  build: 
-    runs-on: ubuntu-latest 
-    
-    steps: 
-    - uses: actions/checkout@v2 
-    - name: Set up Python 
-      uses: actions/setup-python@v2 
-      with: 
-        python-version: 3.9 
-    - name: Install dependencies 
-      run: | 
-        python -m pip install --upgrade pip
-        # Удалите лишние модули, если их нет в PyPI или они не нужны
-        # pip install some-other-package если есть другие реальные зависимости
-    - name: Test with pytest 
-      run: | 
-        python main.py 
-        if [ "$(python -c 'import main; print(main.k)')" == "6" ]; then 
-          echo "Test passed" 
-          exit 0 
-        else 
-          echo "Test failed" 
-          exit 1 
-        fi
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+
+    - name: Check variable k
+      run: |
+        if [ "$(python -c 'from main import k; print(k)')" == "6" ]; then
+          echo "Test passed"
+          exit 0
+        else
+          echo "Test failed"
+          exit 1
 
 
