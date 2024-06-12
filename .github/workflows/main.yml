@@ -28,10 +28,17 @@ jobs:
         run: |
           k_value=${{ steps.extract-k.outputs.k }}
           required_k=6
-          if [ "$k_value" -eq "$required_k" ]; then
+          
+          if ! [[ $k_value =~ ^[0-9]+$ ]]; then
+            echo "Error: k is not a number."
+            exit 1
+          fi
+
+          if [ $k_value -eq $required_k ]; then
             echo "Success: k is $k_value and matches required $required_k"
           else
             echo "Error: k is $k_value and does not match required $required_k"
             exit 1
           fi
+
 
