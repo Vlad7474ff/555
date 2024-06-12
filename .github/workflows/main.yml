@@ -6,13 +6,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Extract value of k from code
+        id: extract-k
+        run: |
+          k_value=$(python -c "exec(open(main.py).read()); print(k)")
+          echo "::set-output name=k::${k_value}"
+
       - name: Test
         run: |
-          python_hash=$(python -c "import random, string; k=6; print(''.join(random.choices(string.ascii_letters + string.digits, k=k)))")
-          echo "Generated hash: $python_hash"
-          if [ ${#python_hash} -ne 6 ]; then
-            echo "Hash length is not 6 characters"
-            exit 1
+          k_value=${{ steps.extract-k.outputs.k }}
+          required_k=6
+          if [ $k_value -eq $required_k ]; then
+            echo "Success: k is $k_value and matches required $required_k"
           else
-            echo "Hash length is 6 characters"
+            echo "Error: k is $k_value and does not match required $required_k"
+            exit 1
           fi
