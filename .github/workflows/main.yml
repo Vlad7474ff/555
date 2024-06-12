@@ -1,32 +1,23 @@
-name: Python CI
+name: Python-test
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: push
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
-
-      - name: Check variable k
+      - name: Test
         run: |
-          value=$(python -c 'from main import k; print(k)')
-          if [ "$value" == "6" ]; then
-            echo "Test passed"
-            exit 0
+          python_code=$(cat main.py)
+          python_result=$(python -c "$python_code")
+          if [ "$python_result" == "6" ]; then
+            echo "Success: k is 6"
           else
-            echo "Test failed"
+            echo "Failure: k is not 6"
             exit 1
-
+          fi
 
 
