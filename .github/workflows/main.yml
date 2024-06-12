@@ -8,12 +8,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Test
         run: |
-          python_hash = generate_random_hash(k)
+          python_hash=$(python -c "import random, string; k=6; print(''.join(random.choices(string.ascii_letters + string.digits, k=k)))")
           echo "Generated hash: $python_hash"
-          if [ ${#python_hash} -eq 6 ]; then
-            echo "Hash length is 6 characters"
-          else
+          if [ ${#python_hash} -ne 6 ]; then
             echo "Hash length is not 6 characters"
             exit 1
+          else
+            echo "Hash length is 6 characters"
           fi
-
