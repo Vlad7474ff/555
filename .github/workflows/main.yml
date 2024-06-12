@@ -7,19 +7,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Verify main.py exists
+        run: |
+          if [ ! -f main.py ]; then
+            echo "Error: main.py does not exist."
+            exit 1
+          fi
+
       - name: Extract value of k from code
         id: extract-k
         run: |
-          k_value=$(python -c "exec(open(main.py).read()); print(k)")
+          k_value=$(python -c "exec(open('main.py').read()); print(k)" 2>/dev/null)
+          if [ -z "$k_value" ]; then
+            echo "Error: Could not read the value of k from main.py."
+            exit 1
+          fi
           echo "::set-output name=k::${k_value}"
 
       - name: Test
         run: |
           k_value=${{ steps.extract-k.outputs.k }}
           required_k=6
-          if [ $k_value -eq $required_k ]; then
+          if [ "$k_value" -eq "$required_k" ]; then
             echo "Success: k is $k_value and matches required $required_k"
           else
             echo "Error: k is $k_value and does not match required $required_k"
             exit 1
           fi
+
